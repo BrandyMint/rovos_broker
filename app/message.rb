@@ -2,7 +2,7 @@
 
 # Copyright (c) 2019 Danil Pismenny <danil@brandymint.ru>
 
-require_relative 'utils'
+require 'lib/utils'
 
 # ValueObject message
 #

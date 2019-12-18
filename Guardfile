@@ -19,7 +19,7 @@
 #
 # and, you'll have to watch "config/Guardfile" instead of "Guardfile"
 
-guard 'ctags-bundler', src_path: ['app', 'lib', 'spec/support'] do
+guard 'ctags-bundler', src_path: %w[app lib] do
   watch(%r{^(app|lib|spec/support)/.*\.rb$})
   watch('Gemfile.lock')
 end

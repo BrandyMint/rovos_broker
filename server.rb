@@ -4,6 +4,7 @@
 # Copyright (c) 2019 Danil Pismenny <danil@brandymint.ru>
 
 require File.expand_path('config/environment', __dir__)
+require 'socket'
 
 PORT = 3000
 MESSAGE_LENGTH = 10
