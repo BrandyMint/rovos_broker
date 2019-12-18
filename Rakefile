@@ -22,4 +22,4 @@ RuboCop::RakeTask.new(:rubocop) do |t|
   t.fail_on_error = true
 end
 
-task default: %w[yard:doctest rubocop]
+task default: %i[rubocop yard:doctest]
