@@ -2,4 +2,6 @@
 
 # Copyright (c) 2019 Danil Pismenny <danil@brandymint.ru>
 
-require_relative 'config/environment'
+require_relative 'boot'
+
+Bundler.require :default, ENV['RACK_ENV'] || 'development'

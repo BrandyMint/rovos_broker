@@ -1,19 +1,24 @@
+# frozen_string_literal: true
+
+# Copyright (c) 2019 Danil Pismenny <danil@brandymint.ru>
+
 require_relative 'utils'
 
-# ValueObject сообщения
+# ValueObject message
 #
 class Message
-  HEADER = 0x4377 # Приходит как 0xDBEF
+  HEADER = 0x4377 # Income as 0xDBEF
 
-  # Все значения хранятся как decimal
+  # Store as decimal
   attr_accessor :header
   attr_accessor :msg1
   attr_accessor :msg2
   attr_accessor :machine_id
 
-  def initialize(header: HEADER, msg1: , msg2:, machine_id: )
+  def initialize(header: HEADER, msg1:, msg2:, machine_id:)
     @header = header
     raise "Unknown header #{Utils.decimal_to_hex header} (#{Utils.decimal_to_hex HEADER})" unless header == HEADER
+
     @msg1 = msg1
     @msg2 = msg2
     @machine_id = machine_id
@@ -24,7 +29,7 @@ class Message
   end
 
   def to_s
-    return [
+    [
       '0x' + Utils.decimal_to_hex(header),
       '0x' + Utils.decimal_to_hex(msg1),
       '0x' + Utils.decimal_to_hex(msg2),
@@ -32,7 +37,7 @@ class Message
     ].join(' ')
   end
 
-  # @example Длинна бинарного сообщения должна быть 10
+  # @example
   #   Message.new(msg1: 0x0204, msg2: 0, machine_id: 100020003).bin.length # => 10
   def bin
     [
