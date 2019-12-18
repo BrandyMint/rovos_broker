@@ -1,0 +1,11 @@
+source 'http://rubygems.org'
+
+group :development do
+  gem 'pry'
+  gem 'pry-nav'
+end
+
+group :test do
+  gem 'yard-doctest'
+  gem 'guard'
+end
