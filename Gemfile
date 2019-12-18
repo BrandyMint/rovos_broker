@@ -10,6 +10,7 @@ group :development do
   gem 'guard'
   gem 'guard-ctags-bundler'
   gem 'guard-rubocop'
+  gem 'guard-shell'
   gem 'pry'
   gem 'pry-nav'
   gem 'rubocop'
