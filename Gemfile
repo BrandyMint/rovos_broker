@@ -11,10 +11,10 @@ group :development do
   gem 'guard-ctags-bundler'
   gem 'guard-rubocop'
   gem 'guard-shell'
+  gem 'minitest-reporters'
   gem 'pry'
   gem 'pry-nav'
   gem 'rubocop'
   gem 'yard'
   gem 'yard-doctest'
-  gem 'minitest-reporters'
 end
