@@ -16,4 +16,5 @@ group :development do
   gem 'rubocop'
   gem 'yard'
   gem 'yard-doctest'
+  gem 'minitest-reporters'
 end
