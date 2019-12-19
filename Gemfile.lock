@@ -5,6 +5,7 @@ GEM
     ast (2.4.0)
     builder (3.2.4)
     coderay (1.1.2)
+    concurrent-ruby (1.1.5)
     daemons (1.3.1)
     eventmachine (1.2.7)
     ffi (1.11.3)
@@ -28,6 +29,19 @@ GEM
     guard-shell (0.7.1)
       guard (>= 2.0.0)
       guard-compat (~> 1.0)
+    hanami-controller (1.3.2)
+      hanami-utils (~> 1.3)
+      rack (~> 2.0)
+    hanami-router (1.3.1)
+      hanami-utils (~> 1.3)
+      http_router (= 0.11.2)
+      rack (~> 2.0)
+    hanami-utils (1.3.5)
+      concurrent-ruby (~> 1.0)
+      transproc (~> 1.0)
+    http_router (0.11.2)
+      rack (>= 1.0.0)
+      url_mount (~> 0.2.1)
     jaro_winkler (1.5.4)
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -72,7 +86,10 @@ GEM
       eventmachine (~> 1.0, >= 1.0.4)
       rack (>= 1, < 3)
     thor (1.0.1)
+    transproc (1.1.0)
     unicode-display_width (1.6.0)
+    url_mount (0.2.1)
+      rack
     yard (0.9.20)
     yard-doctest (0.1.17)
       minitest
@@ -86,6 +103,8 @@ DEPENDENCIES
   guard-ctags-bundler
   guard-rubocop
   guard-shell
+  hanami-controller
+  hanami-router
   minitest-reporters
   pry
   pry-nav

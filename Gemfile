@@ -6,6 +6,8 @@ source 'http://rubygems.org'
 
 gem 'thin'
 gem 'rack'
+gem 'hanami-router'
+gem 'hanami-controller'
 
 group :development do
   gem 'rake'

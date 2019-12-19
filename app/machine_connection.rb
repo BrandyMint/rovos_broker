@@ -15,19 +15,26 @@ class MachineConnection
     20 => Message.new(msg1: 0x0214, msg2: 0, machine_id: MACHINE_ID)
   }.freeze
 
+  attr_reader :machine_id
+
   # @param conn [Socket]
   # @param addr
+  # @param connections_map [Concurrent::Map]
   def initialize(conn, addr)
     @conn = conn
     @addr = addr
   end
 
-  def perform
+  def perform(add_machine:, remove_machine:)
     log 'Connected'
     Thread.new do
       loop do
         bin = conn.recv(MESSAGE_LENGTH)
         message = create_message decode bin
+        if machine_id.nil?
+          add_machine.call message.machine_id
+          @machine_id = machine_id
+        end
         log "Received 0x#{Utils.bin_to_hex bin} as #{message}"
         # send_message OUTCOME_MESSAGE if count == 2
       end
@@ -37,13 +44,18 @@ class MachineConnection
     rescue StandardError => e
       log "Disconnected with #{e}"
     ensure
+      remove_machine.call machine_id unless machine_id.nil?
       log 'Close connection'
     end
   end
 
+  def status
+    'status is ok'
+  end
+
   private
 
-  attr_reader :conn, :addr
+  attr_reader :conn, :addr, :machine_id
 
   def create_message(bin)
     Message.new(

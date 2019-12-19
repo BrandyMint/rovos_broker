@@ -5,17 +5,22 @@ require File.expand_path('config/environment', __dir__)
 
 require 'rack'
 
+MACHINE_CONNECTIONS = Concurrent::Map.new
+
 Thread.new do
-  MachineServer.new.perform ENV.fetch('ROVOS_PORT', 3000)
+  MachineServer.new.
+    perform(connections_map: MACHINE_CONNECTIONS, port: ENV.fetch('ROVOS_PORT', 3000))
 end
 
-handler = Rack::Handler::Thin
+app = Hanami::Router.new do
+  # List of connected machines
+  get '/machines',  to:  'machines#index'
 
-class RackApp
-  def call(env)
-    # req = Rack::Request.new(env)
-    [200, {"Content-Type" => "text/plain"}, "Hello from Rack"]
-  end
+  # Get status of machine
+  get '/machines/:id', to: 'machines#status'
+
+  # Start machine
+  post '/machines/:id', to: 'mashines#start'
 end
 
-handler.run RackApp.new, Port: 8080
+Rack::Handler::Thin.run app, Port: 8080
