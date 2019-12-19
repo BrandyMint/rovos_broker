@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
+# Copyright (c) 2019 Danil Pismenny <danil@brandymint.ru>
+
 module Machines
   # HEADERS = {"Content-Type" => "application/json"}
   class Index
     include Hanami::Action
-    def call(params)
+    def call(_params)
       # self.headers.merge!({ 'X-Custom' => 'OK' })
       self.body = MACHINE_CONNECTIONS.keys.to_json
     end

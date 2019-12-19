@@ -4,13 +4,12 @@
 
 source 'http://rubygems.org'
 
-gem 'thin'
-gem 'rack'
-gem 'hanami-router'
 gem 'hanami-controller'
+gem 'hanami-router'
+gem 'rack'
+gem 'thin'
 
 group :development do
-  gem 'rake'
   gem 'guard'
   gem 'guard-ctags-bundler'
   gem 'guard-rubocop'
@@ -18,6 +17,7 @@ group :development do
   gem 'minitest-reporters'
   gem 'pry'
   gem 'pry-nav'
+  gem 'rake'
   gem 'rubocop'
   gem 'yard'
   gem 'yard-doctest'
