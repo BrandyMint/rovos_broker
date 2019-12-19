@@ -9,12 +9,10 @@ require File.expand_path('config/environment', __dir__)
 
 require 'rack'
 
-MACHINE_CONNECTIONS = Concurrent::Map.new
+TCP_PORT = ENV.fetch('ROVOS_PORT', 3000)
 
-Thread.new do
-  MachineServer.new
-               .perform(connections_map: MACHINE_CONNECTIONS, port: ENV.fetch('ROVOS_PORT', 3000))
-end
+SERVER = MachineServer.new
+MACHINE_CONNECTIONS = SERVER.connections
 
 app = Hanami::Router.new do
   # List of connected machines
@@ -27,4 +25,10 @@ app = Hanami::Router.new do
   post '/machines/:id', to: 'machines#start'
 end
 
-Rack::Handler::Thin.run app, Port: 8080
+EventMachine::run do
+  SERVER.start TCP_PORT
+  Rack::Handler::Thin.run app, Port: 8080, signals: false
+  #trap "SIGINT" do
+    #EventMachine.stop
+  #end
+end

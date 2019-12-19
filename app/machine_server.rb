@@ -1,21 +1,36 @@
-# frozen_string_literal: true
-
-# Copyright (c) 2019 Danil Pismenny <danil@brandymint.ru>
-
-require 'socket'
-
-# ROVOS machine broker server
-#
 class MachineServer
-  def perform(port:, connections_map:)
-    puts "Start ROVOS machine server. Listening port #{port}"
+  attr_reader :connections, :signature
 
-    Socket.tcp_server_loop(port) do |conn, addr|
-      machine = MachineConnection.new(conn, addr)
-      add_machine = ->(id) { connections_map.put_if_absent id, machine }
-      remove_machine = ->(id) { connections_map.delete id }
-      machine.perform(add_machine: add_machine, remove_machine: remove_machine)
-      connections_map
+  def initialize
+    @connections = Concurrent::Map.new
+  end
+
+  def start(port)
+    puts "Start TCP (Rovos) server listening on #{port}"
+    # p Socket.unpack_sockaddr_in( EM.get_sockname( server.signature ))
+    @signature = EventMachine.start_server('0.0.0.0', port, MachineConnection) do |con|
+      con.server = self
+    end
+  end
+
+  def stop
+    EventMachine.stop_server(@signature)
+
+    unless wait_for_connections_and_stop
+      # Still some connections running, schedule a check later
+      EventMachine.add_periodic_timer(1) { wait_for_connections_and_stop }
+    end
+  end
+
+  def wait_for_connections_and_stop
+    if @connections.empty?
+      EventMachine.stop
+      true
+    else
+      puts "Waiting for #{@connections.size} connection(s) to finish ..."
+      false
     end
   end
 end
+
+

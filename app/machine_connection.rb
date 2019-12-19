@@ -2,45 +2,26 @@
 
 # Copyright (c) 2019 Danil Pismenny <danil@brandymint.ru>
 
+require 'eventmachine'
+require 'socket'
+
 # Connection to specific machine
 #
-class MachineConnection
-  MESSAGE_LENGTH = 10
-
+class MachineConnection < EventMachine::Connection
+  attr_accessor :server
   attr_reader :machine_id
 
-  # @param conn [Socket]
-  # @param addr
-  # @param connections_map [Concurrent::Map]
-  def initialize(conn, addr)
-    @conn = conn
-    @addr = addr
+  def receive_data(data)
+    message = create_message decode data
+
+    save_machine_id message
+    log "Received 0x#{Utils.bin_to_hex data} as #{message}"
   end
 
-  def perform(add_machine:, remove_machine:)
-    log 'Connected'
-    Thread.new do
-      loop do
-        bin = conn.recv(MESSAGE_LENGTH)
-        message = create_message decode bin
-        if machine_id.nil?
-          @machine_id = message.machine_id
-          log "Add machine to the list #{machine_id}"
-          add_machine.call machine_id
-        end
-        log "Received 0x#{Utils.bin_to_hex bin} as #{message}"
-        # send_message OUTCOME_MESSAGE if count == 2
-      end
-    rescue EOFError
-      conn.close
-      log 'Disconnected with EOFError'
-    rescue StandardError => e
-      log "Disconnected with #{e}"
-    ensure
-      remove_machine.call machine_id unless machine_id.nil?
-      log 'Close connection'
-    end
-  end
+	def unbind
+		puts 'Close connecition'
+		server.connections.delete(machine_id)
+	end
 
   def status
     return if machine_id.nil?
@@ -71,13 +52,25 @@ class MachineConnection
   end
 
   def log(message)
-    client = "#{addr.ip_address}:#{addr.ip_port}"
-    puts "#{Time.now}: #{client} #{message}"
+    port, ip = Socket.unpack_sockaddr_in(get_peername)
+    puts "#{Time.now}: #{port}:#{ip} #{message}"
   end
 
   def send_message(message)
     log "Send #{Utils.bin_to_hex message.bin} as #{message}"
-    conn.print(decode(message.bin))
+    send_data decode message.bin
+    # send_data ">>>you sent: #{data}"
+    # close_connection if data =~ /quit/i
+  end
+
+  def save_machine_id(message)
+    if machine_id.nil?
+      @machine_id = message.machine_id
+      log "Add machine with #{machine_id} to online list"
+      server.connections.put_if_absent machine_id, self
+    else
+      raise "Machine ID is changed #{machine_id} <> #{message.machine_id}" unless machine_id.nil? || machine_id == message.machine_id
+    end
   end
 
   KEY = 152

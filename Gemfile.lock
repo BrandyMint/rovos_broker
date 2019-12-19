@@ -99,6 +99,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  eventmachine
   guard
   guard-ctags-bundler
   guard-rubocop

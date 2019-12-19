@@ -8,6 +8,7 @@ gem 'hanami-controller'
 gem 'hanami-router'
 gem 'rack'
 gem 'thin'
+gem 'eventmachine'
 
 group :development do
   gem 'guard'
