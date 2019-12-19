@@ -10,25 +10,23 @@ require File.expand_path('config/environment', __dir__)
 require 'rack'
 
 TCP_PORT = ENV.fetch('ROVOS_PORT', 3000)
+HTTP_PORT = ENV.fetch('HTTP_PORT', 8080)
+DEFAULT_MINUTES = 4
 
-SERVER = MachineServer.new
-MACHINE_CONNECTIONS = SERVER.connections
+$tcp_server = MachineServer.new
 
 app = Hanami::Router.new do
   # List of connected machines
   get '/machines', to: 'machines#index'
 
   # Get status of machine
-  get '/machines/:id', to: 'machines#status'
+  get '/machines/:id', to: 'machines#get_status'
 
   # Start machine
-  post '/machines/:id', to: 'machines#start'
+  post '/machines/:id', to: 'machines#change_status'
 end
 
 EventMachine::run do
-  SERVER.start TCP_PORT
-  Rack::Handler::Thin.run app, Port: 8080, signals: false
-  #trap "SIGINT" do
-    #EventMachine.stop
-  #end
+  $tcp_server.start TCP_PORT
+  Rack::Handler::Thin.run app, Port: HTTP_PORT, signals: false
 end

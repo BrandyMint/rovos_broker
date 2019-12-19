@@ -23,19 +23,26 @@ class MachineConnection < EventMachine::Connection
 		server.connections.delete(machine_id)
 	end
 
-  def status
+  def message(id:, arg:)
+  end
+
+  def get
     return if machine_id.nil?
     log "Send status request"
+    @response_expectation = :status
     send_message Message.new(msg1: 0x0400, machine_id: machine_id)
     'send status request'
   end
 
-  def start(minutes = 10)
+  # Устаналивает нужный режим работы машины
+  #
+  # @param state_id [Decimal] Requested to change machine's state to `state_id`
+  # @param time [Decimal] Time to work in minutes (for state #2)
+  def set(state, time)
     return if machine_id.nil?
-    # TODO minutes
-    log "Start machine for #{minutes}"
-    send_message Message.new(msg1: 0x020A, machine_id: machine_id)
-    "started for #{minutes} minutes"
+    log "Send command `#{state}` with argument `#{time}`"
+    send_message Message.new(msg1: Utils.word_from_bytes(state.to_i, time.to_i), machine_id: machine_id)
+    "Started for #{time} minutes (state=#{state})"
   end
 
   private
@@ -44,9 +51,9 @@ class MachineConnection < EventMachine::Connection
 
   def create_message(bin)
     Message.new(
-      header: Utils.bin_to_decimal(bin[0, 2]),
-      msg1: Utils.bin_to_decimal(bin[2, 2]),
-      msg2: Utils.bin_to_decimal(bin[4, 2]),
+      header:     Utils.bin_to_decimal(bin[0, 2]),
+      msg1:       Utils.bin_to_decimal(bin[2, 2]),
+      msg2:       Utils.bin_to_decimal(bin[4, 2]),
       machine_id: Utils.bin_to_decimal(bin[6, 4])
     )
   end
@@ -59,8 +66,6 @@ class MachineConnection < EventMachine::Connection
   def send_message(message)
     log "Send #{Utils.bin_to_hex message.bin} as #{message}"
     send_data decode message.bin
-    # send_data ">>>you sent: #{data}"
-    # close_connection if data =~ /quit/i
   end
 
   def save_machine_id(message)

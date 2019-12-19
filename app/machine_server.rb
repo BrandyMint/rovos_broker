@@ -1,4 +1,6 @@
 class MachineServer
+  WAIT_TO_STOP = ENV['RACK_ENV'] == 'development' ? 0 : 3
+
   attr_reader :connections, :signature
 
   def initialize
@@ -18,7 +20,7 @@ class MachineServer
 
     unless wait_for_connections_and_stop
       # Still some connections running, schedule a check later
-      EventMachine.add_periodic_timer(1) { wait_for_connections_and_stop }
+      EventMachine.add_periodic_timer(WAIT_TO_STOP) { wait_for_connections_and_stop }
     end
   end
 

@@ -3,6 +3,8 @@
 # Copyright (c) 2019 Danil Pismenny <danil@brandymint.ru>
 
 # Utils to work with data (hex, bin)
+# * `hex` - Человекочитаемая строка с HEX-значениями. Например:  "12FA"
+# * `bin` - Строка в которой каждый симлов - байт. Например: "\x98\x98"
 #
 class Utils
   # @example
@@ -40,5 +42,17 @@ class Utils
 
   def self.bin_to_decimal(bin)
     bin_to_hex(bin).to_i(16)
+  end
+
+  # @param b1 [Decimal] ID of command
+  #   2 - включить кресло на указанное время.
+  #   4 - получить статус кресла.
+  # @param b2 [Decimal] Второй аргумент (время в минутах если команда на включение)
+  # @return [Binary]
+  #
+  # @example binary data
+  #   Utils.word_from_bytes(2, 10) # => 0x020A
+  def self.word_from_bytes(b1, b2=0)
+    [b1, b2].pack('c*').unpack1('n')
   end
 end
