@@ -22,7 +22,7 @@ app = Hanami::Router.new do
   # Get status of machine
   get '/machines/:id', to: 'machines#get_status'
 
-  # Start machine
+  # Change status of machine
   post '/machines/:id', to: 'machines#change_status'
 end
 
