@@ -23,10 +23,10 @@ class MachineServer
   def stop
     EventMachine.stop_server(@signature)
 
-    unless wait_for_connections_and_stop
-      # Still some connections running, schedule a check later
-      EventMachine.add_periodic_timer(WAIT_TO_STOP) { wait_for_connections_and_stop }
-    end
+    return if wait_for_connections_and_stop
+
+    # Still some connections running, schedule a check later
+    EventMachine.add_periodic_timer(WAIT_TO_STOP) { wait_for_connections_and_stop }
   end
 
   def wait_for_connections_and_stop

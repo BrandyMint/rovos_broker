@@ -74,8 +74,8 @@ class MachineConnection < EventMachine::Connection
       @machine_id = message.machine_id
       log "Add machine with #{machine_id} to online list"
       server.connections.put_if_absent machine_id, self
-    else
-      raise "Machine ID is changed #{machine_id} <> #{message.machine_id}" unless machine_id.nil? || machine_id == message.machine_id
+    elsif machine_id != message.machine_id
+      raise "Oops! Machine ID is changed #{machine_id} <> #{message.machine_id}."
     end
   end
 
