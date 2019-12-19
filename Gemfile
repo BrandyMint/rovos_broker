@@ -18,6 +18,7 @@ group :development do
   gem 'minitest-reporters'
   gem 'pry'
   gem 'pry-nav'
+  gem 'pry-theme'
   gem 'rake'
   gem 'rubocop'
   gem 'yard'
