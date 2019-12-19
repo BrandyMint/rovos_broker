@@ -4,9 +4,11 @@
 
 source 'http://rubygems.org'
 
-gem 'rake'
+gem 'thin'
+gem 'rack'
 
 group :development do
+  gem 'rake'
   gem 'guard'
   gem 'guard-ctags-bundler'
   gem 'guard-rubocop'

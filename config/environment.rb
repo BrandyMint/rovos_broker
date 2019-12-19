@@ -13,3 +13,4 @@ require 'bundler/setup'
 
 require_relative '../app/message'
 require_relative '../app/machine_connection'
+require_relative '../app/machine_server'
