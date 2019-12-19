@@ -7,14 +7,6 @@
 class MachineConnection
   MESSAGE_LENGTH = 10
 
-  MACHINE_ID = 100_020_003
-
-  OUTCOME_MESSAGES = {
-    5 => Message.new(msg1: 0x0205, msg2: 0, machine_id: MACHINE_ID),
-    10 => Message.new(msg1: 0x020A, msg2: 0, machine_id: MACHINE_ID),
-    20 => Message.new(msg1: 0x0214, msg2: 0, machine_id: MACHINE_ID)
-  }.freeze
-
   attr_reader :machine_id
 
   # @param conn [Socket]
@@ -32,8 +24,9 @@ class MachineConnection
         bin = conn.recv(MESSAGE_LENGTH)
         message = create_message decode bin
         if machine_id.nil?
-          add_machine.call message.machine_id
-          @machine_id = machine_id
+          @machine_id = message.machine_id
+          log "Add machine to the list #{machine_id}"
+          add_machine.call machine_id
         end
         log "Received 0x#{Utils.bin_to_hex bin} as #{message}"
         # send_message OUTCOME_MESSAGE if count == 2
@@ -50,12 +43,23 @@ class MachineConnection
   end
 
   def status
-    'status is ok'
+    return if machine_id.nil?
+    log "Send status request"
+    send_message Message.new(msg1: 0x0400, machine_id: machine_id)
+    'send status request'
+  end
+
+  def start(minutes = 10)
+    return if machine_id.nil?
+    # TODO minutes
+    log "Start machine for #{minutes}"
+    send_message Message.new(msg1: 0x020A, machine_id: machine_id)
+    "started for #{minutes} minutes"
   end
 
   private
 
-  attr_reader :conn, :addr, :machine_id
+  attr_reader :conn, :addr
 
   def create_message(bin)
     Message.new(

@@ -15,7 +15,7 @@ class Message
   attr_accessor :msg2
   attr_accessor :machine_id
 
-  def initialize(header: HEADER, msg1:, msg2:, machine_id:)
+  def initialize(header: HEADER, msg1:, msg2: 0, machine_id:)
     @header = header
     raise "Unknown header #{Utils.decimal_to_hex header} (#{Utils.decimal_to_hex HEADER})" unless header == HEADER
 

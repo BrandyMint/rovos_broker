@@ -24,7 +24,7 @@ app = Hanami::Router.new do
   get '/machines/:id', to: 'machines#status'
 
   # Start machine
-  post '/machines/:id', to: 'mashines#start'
+  post '/machines/:id', to: 'machines#start'
 end
 
 Rack::Handler::Thin.run app, Port: 8080

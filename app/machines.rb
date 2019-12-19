@@ -2,6 +2,8 @@
 
 # Copyright (c) 2019 Danil Pismenny <danil@brandymint.ru>
 
+# Machines web controller (JSON)
+#
 module Machines
   # HEADERS = {"Content-Type" => "application/json"}
   class Index
@@ -15,8 +17,13 @@ module Machines
   class Start
     include Hanami::Action
     def call(params)
-      puts params[:id]
-      self.body = 'ok'
+      id = params[:id].to_i
+      minutes = params[:minutes].to_i
+      minutes = 4 if minutes == 0
+      self.body = MACHINE_CONNECTIONS.fetch(id).start(minutes)
+    rescue KeyError
+      self.status = 404
+      self.body = "No such machine online #{id}"
     end
   end
 
@@ -27,7 +34,7 @@ module Machines
       self.body = MACHINE_CONNECTIONS.fetch(id).status
     rescue KeyError
       self.status = 404
-      self.body = "No such machine found #{id}"
+      self.body = "No such machine online #{id}"
     end
   end
 end
