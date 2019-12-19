@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+# Copyright (c) 2019 Danil Pismenny <danil@brandymint.ru>
+
+# ROVOS TCP Server
 class MachineServer
   WAIT_TO_STOP = ENV['RACK_ENV'] == 'development' ? 0 : 3
 
@@ -34,5 +39,3 @@ class MachineServer
     end
   end
 end
-
-

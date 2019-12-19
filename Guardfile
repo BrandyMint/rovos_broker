@@ -50,10 +50,10 @@ end
 ## watch(%r{^app/models/(.*)\.rb$})      { |m| "test/unit/#{m[1]}_test.rb" }
 # end
 
-#guard :rubocop do
-  #watch(/.+\.rb$/)
-  #watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
-#end
+# guard :rubocop do
+# watch(/.+\.rb$/)
+# watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
+# end
 
 guard :shell do
   watch(/(.*).rb/) { |m| system("yard doctest #{m[0]}") }

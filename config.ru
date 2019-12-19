@@ -26,7 +26,7 @@ app = Hanami::Router.new do
   post '/machines/:id', to: 'machines#change_status'
 end
 
-EventMachine::run do
+EventMachine.run do
   $tcp_server.start TCP_PORT
   Rack::Handler::Thin.run app, Port: HTTP_PORT, signals: false
 end

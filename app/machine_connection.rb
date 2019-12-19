@@ -13,33 +13,34 @@ class MachineConnection < EventMachine::Connection
 
   def receive_data(data)
     message = create_message decode data
-
-    save_machine_id message
     log "Received 0x#{Utils.bin_to_hex data} as #{message}"
+    save_machine_id message
   end
 
-	def unbind
-		puts 'Close connecition'
-		server.connections.delete(machine_id)
-	end
-
-  def message(id:, arg:)
+  def unbind
+    puts 'Close connecition'
+    server.connections.delete(machine_id)
   end
 
   def get
     return if machine_id.nil?
-    log "Send status request"
+
+    log 'Send status request'
     @response_expectation = :status
     send_message Message.new(msg1: 0x0400, machine_id: machine_id)
+
+    # TODO: ПОЛУЧИТЬ АСИНХРОННЫЙ ОТВЕТ
+    #
     'send status request'
   end
 
   # Устаналивает нужный режим работы машины
   #
-  # @param state_id [Decimal] Requested to change machine's state to `state_id`
+  # @param state [Decimal] Requested to change machine's state to `state`
   # @param time [Decimal] Time to work in minutes (for state #2)
   def set(state, time)
     return if machine_id.nil?
+
     log "Send command `#{state}` with argument `#{time}`"
     send_message Message.new(msg1: Utils.word_from_bytes(state.to_i, time.to_i), machine_id: machine_id)
     "Started for #{time} minutes (state=#{state})"
@@ -51,9 +52,9 @@ class MachineConnection < EventMachine::Connection
 
   def create_message(bin)
     Message.new(
-      header:     Utils.bin_to_decimal(bin[0, 2]),
-      msg1:       Utils.bin_to_decimal(bin[2, 2]),
-      msg2:       Utils.bin_to_decimal(bin[4, 2]),
+      header: Utils.bin_to_decimal(bin[0, 2]),
+      msg1: Utils.bin_to_decimal(bin[2, 2]),
+      msg2: Utils.bin_to_decimal(bin[4, 2]),
       machine_id: Utils.bin_to_decimal(bin[6, 4])
     )
   end

@@ -44,15 +44,15 @@ class Utils
     bin_to_hex(bin).to_i(16)
   end
 
-  # @param b1 [Decimal] ID of command
+  # @param byte1 [Decimal] ID of command
   #   2 - включить кресло на указанное время.
   #   4 - получить статус кресла.
-  # @param b2 [Decimal] Второй аргумент (время в минутах если команда на включение)
+  # @param byte2 [Decimal] Второй аргумент (время в минутах если команда на включение)
   # @return [Binary]
   #
   # @example binary data
   #   Utils.word_from_bytes(2, 10) # => 0x020A
-  def self.word_from_bytes(b1, b2=0)
-    [b1, b2].pack('c*').unpack1('n')
+  def self.word_from_bytes(byte1, byte2 = 0)
+    [byte1, byte2].pack('c*').unpack1('n')
   end
 end
