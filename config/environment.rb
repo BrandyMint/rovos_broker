@@ -11,6 +11,8 @@ Dir[File.join(__dir__, 'initializers', '*.rb')].each { |file| require file }
 require 'rubygems'
 require 'bundler/setup'
 
+require 'json'
+
 require_relative '../app/message'
 require_relative '../app/machine_connection'
 require_relative '../app/machine_server'

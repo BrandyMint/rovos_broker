@@ -27,5 +27,5 @@ end
 
 EventMachine.run do
   $tcp_server.start TCP_PORT
-  Rack::Handler::Thin.run app, Port: HTTP_PORT, signals: false
+  Rack::Handler::Thin.run app, Host: '0.0.0.0', Port: HTTP_PORT, signals: false
 end
