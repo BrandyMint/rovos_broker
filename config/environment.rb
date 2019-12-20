@@ -12,6 +12,8 @@ require 'rubygems'
 require 'bundler/setup'
 
 require 'json'
+require 'semver'
+AppVersion = SemVer.find
 
 require_relative '../app/message'
 require_relative '../app/machine_connection'

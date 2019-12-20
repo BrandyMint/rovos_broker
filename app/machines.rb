@@ -8,7 +8,7 @@
 # Использую haname-action только ради обработки ошибок
 #
 module Machines
-  HEADERS = { 'Content-Type' => 'application/json' }.freeze
+  HEADERS = { 'Content-Type' => 'application/json', 'X-App-Version' => AppVersion.to_s }.freeze
   # Сборник утилит
   class Action
     private

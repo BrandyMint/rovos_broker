@@ -11,6 +11,7 @@ gem 'rack'
 gem 'shallow_attributes'
 gem 'thin'
 gem 'foreman'
+gem 'semver2'
 
 group :development do
   gem 'guard'

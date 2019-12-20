@@ -107,6 +107,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.7)
     ruby-progressbar (1.10.1)
+    semver2 (3.4.2)
     shallow_attributes (0.9.5)
     shellany (0.0.1)
     sshkit (1.20.0)
@@ -150,6 +151,7 @@ DEPENDENCIES
   rack
   rake
   rubocop
+  semver2
   shallow_attributes
   thin
   yard
