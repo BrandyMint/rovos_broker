@@ -8,7 +8,11 @@
 # Использую haname-action только ради обработки ошибок
 #
 module Machines
-  HEADERS = { 'Content-Type' => 'application/json', 'X-App-Version' => AppVersion.to_s }.freeze
+  HEADERS = {
+    'Content-Type'  => 'application/json',
+    'X-App-Version' => AppVersion.to_s,
+    'X-App-Env'     => ENV['RACK_ENV']
+  }.freeze
   # Сборник утилит
   class Action
     private
@@ -29,7 +33,7 @@ module Machines
     def call(_params)
       headers.merge! HEADERS
       self.status = 200
-      self.body = { machines: $tcp_server.connections.keys }.to_json
+      self.body = { env: ENV['RACK_ENV'], version: AppVersion.to_s, machines: $tcp_server.connections.keys }.to_json
     end
   end
 
