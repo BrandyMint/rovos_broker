@@ -24,9 +24,14 @@ module Machines
     def call(params)
       self.headers.merge! HEADERS
       connection = $tcp_server.connections.fetch params[:id].to_i
+      sid = connection.channel.subscribe do |message|
+        @_env['async.callback'].call [200, HEADERS, { response_message: message.to_h }.to_json ]
+        connection.channel.unsubscribe sid
+      end
       message = connection.build_message state: params[:state].to_i, work_time: params[:time].to_i
       connection.send_message message
-      self.body = { message: message.to_h, status: 'sent'  }.to_json
+      self.status = -1
+      # self.body = { message: message.to_h, status: 'sent'  }.to_json
     rescue KeyError
       self.status = 404
       self.body = { error: "No such machine online" }.to_json
@@ -38,17 +43,9 @@ module Machines
     include Hanami::Action
     def call(params)
       connection = $tcp_server.connections.fetch params[:id].to_i
-
-      cb = Proc.new do |message|
-        connection.query = nil
-        @_env['async.callback'].call [200, HEADERS, { response_message: message.to_h }.to_json ]
-      end
-      connection.query = EM::Queue.new
-      connection.query.pop(&cb)
-
-      connection.send_message connection.build_message state: 4
       self.headers.merge! HEADERS
-      self.status = -1
+      self.status = 200
+      self.body = { machine_id: connection.machine_id, last_activity: connection.last_activity }.to_json
     rescue KeyError
       self.status = 404
       self.body = { error: "No such machine online" }.to_json

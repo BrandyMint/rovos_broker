@@ -15,8 +15,6 @@ DEFAULT_MINUTES = 4
 
 $tcp_server = MachineServer.new
 
-AsyncResponse = [-1, {}, []].freeze
-
 app = Hanami::Router.new do
   # List of connected machines
   get '/machines', to: 'machines#index'

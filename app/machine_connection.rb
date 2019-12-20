@@ -12,21 +12,25 @@ class MachineConnection < EventMachine::Connection
 
   HEADER = 0x4377 # Income as 0xDBEF
   attr_accessor :server
+
   attr_reader :machine_id
-  attr_accessor :query
+  attr_reader :channel
+  attr_reader :last_activity
 
   def initialize
+    @channel = EventMachine::Channel.new
   end
 
   def post_init
-    log "Connection"
+    log "Connected"
   end
 
   def receive_data(data)
+    @last_activity = Time.now
     message = load_message decode data
     log "Received 0x#{Utils.bin_to_hex data} as #{message}"
-    query.push message unless query.nil? # message.msg1 == 0x0400
     save_machine_id message
+    channel.push message
   rescue Message::Error => err
     log "Wrong message header #{err}"
   end
@@ -36,20 +40,11 @@ class MachineConnection < EventMachine::Connection
     server.connections.delete(machine_id)
   end
 
-  # Устаналивает нужный режим работы машины
-  #
-  # @param state [Decimal] Requested to change machine's state to `state`
-  # @param time [Decimal] Time to work in minutes (for state #2)
-  def push(state, time)
-    return if machine_id.nil?
-    log "Push state `#{state}` with argument `#{time}`"
-    send_message Message.new(msg1: Utils.word_from_bytes(state.to_i, time.to_i), machine_id: machine_id)
-  end
-
   def send_message(message)
     message.machine_id = machine_id
     log "Send #{Utils.bin_to_hex message.bin} as #{message}"
     send_data decode message.bin
+    message
   end
 
   def build_message(state:, work_time: 0, time_left: 0)
