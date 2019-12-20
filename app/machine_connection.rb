@@ -30,7 +30,7 @@ class MachineConnection < EventMachine::Connection
     message = load_message decode data
     log "Received 0x#{Utils.bin_to_hex data} as #{message}"
     save_machine_id message
-    channel.push message
+    channel.push message unless channel.nil?
   rescue Error => err
     log "Wrong message header #{err}"
   end
