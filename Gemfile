@@ -24,4 +24,9 @@ group :development do
   gem 'rubocop'
   gem 'yard'
   gem 'yard-doctest'
+
+  gem 'capistrano', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-rbenv', require: false
+  gem 'capistrano-shell', require: false
 end
