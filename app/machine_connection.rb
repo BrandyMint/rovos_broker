@@ -5,7 +5,7 @@
 require 'eventmachine'
 require 'socket'
 
-# Connection to specific machine
+# Connection to specific ROVOS machine by TCP
 #
 class MachineConnection < EventMachine::Connection
   Error = Class.new StandardError
@@ -31,13 +31,13 @@ class MachineConnection < EventMachine::Connection
     log "Received 0x#{Utils.bin_to_hex data} as #{message}"
     save_machine_id message
     channel.push message
-  rescue Message::Error => err
+  rescue Error => err
     log "Wrong message header #{err}"
   end
 
   def unbind
     log 'Close connecition'
-    server.connections.delete(machine_id)
+    server.connections.delete(machine_id) unless machine_id.nil?
   end
 
   def send_message(message)
@@ -74,9 +74,15 @@ class MachineConnection < EventMachine::Connection
     )
   end
 
+  def client
+    @client ||= begin
+                  port, ip = Socket.unpack_sockaddr_in(get_peername)
+                  "TCP[rovos]://#{ip}:#{port}"
+                end
+  end
+
   def log(message)
-    port, ip = Socket.unpack_sockaddr_in(get_peername)
-    puts "#{Time.now}: TCP #{port}:#{ip} #{message}"
+    puts "#{Time.now}: #{client} #{message}"
   end
 
   def save_machine_id(message)
