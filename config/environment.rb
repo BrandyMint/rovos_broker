@@ -20,6 +20,7 @@ require_relative '../app/machine_connection'
 require_relative '../app/machine_server'
 require_relative '../app/machines'
 
+require 'logger'
 if ENV['RACK_ENV'] == 'development'
   $logger = Logger.new(STDERR)
 else

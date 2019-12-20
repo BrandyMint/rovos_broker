@@ -1,1 +1,1 @@
-server: bundle exec rackup
+broker: bundle exec rackup
