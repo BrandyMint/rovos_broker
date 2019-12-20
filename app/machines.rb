@@ -24,10 +24,10 @@ module Machines
       connection = $tcp_server.connections.fetch params[:id].to_i
       message = connection.build_message state: params[:state].to_i, work_time: params[:time].to_i
       connection.send_message message
-      self.body = { message: message, status: 'sent'  }.to_json
+      self.body = { message: message.to_h, status: 'sent'  }.to_json
     rescue KeyError
       self.status = 404
-      self.body = "No such machine online #{id}"
+      self.body = "No such machine online"
     end
   end
 
@@ -39,7 +39,7 @@ module Machines
 
       cb = Proc.new do |message|
         connection.query = nil
-        @_env['async.callback'].call [200, {'Content-Type' => 'application/json'}, { response_message: message }.to_jso ]
+        @_env['async.callback'].call [200, {'Content-Type' => 'application/json'}, { response_message: message.to_h }.to_json ]
       end
       connection.query = EM::Queue.new
       connection.query.pop(&cb)
@@ -48,7 +48,7 @@ module Machines
       self.status = -1
     rescue KeyError
       self.status = 404
-      self.body = "No such machine online #{id}"
+      self.body = "No such machine online"
     end
   end
 end
