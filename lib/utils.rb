@@ -16,7 +16,7 @@ class Utils
   # @example
   #   bin_to_hex("\xAB\x98") # => "AB98"
   def self.bin_to_hex(bin)
-    return nil if bin.nil?
+    return if bin.nil?
 
     bin.unpack1('H*').upcase
   end
@@ -25,6 +25,8 @@ class Utils
   #   convert_hex_endian('05F62F23') # => '232FF605'.force_encoding('ASCII-8BIT')
   #   convert_hex_endian('05F6') # => 'F605'.force_encoding('ASCII-8BIT')
   def self.convert_hex_endian(hex)
+    return if hex.nil?
+
     case hex.length
     when 8
       [hex].pack('H*').unpack('N*').pack('V*').unpack1('H*').upcase
@@ -45,7 +47,7 @@ class Utils
   end
 
   def self.bin_to_decimal(bin)
-    return nil if bin.nil?
+    return if bin.nil?
 
     bin_to_hex(bin).to_i(16)
   end
