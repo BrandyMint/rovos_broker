@@ -5,7 +5,6 @@
 source 'http://rubygems.org'
 
 gem 'eventmachine'
-gem 'foreman'
 gem 'hanami-controller'
 gem 'hanami-router'
 gem 'rack'
@@ -14,6 +13,7 @@ gem 'shallow_attributes'
 gem 'thin'
 
 group :development do
+  gem 'foreman'
   gem 'guard'
   gem 'guard-ctags-bundler'
   gem 'guard-rubocop'
@@ -29,7 +29,7 @@ group :development do
 
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
-  gem 'capistrano-foreman', require: false
   gem 'capistrano-rbenv', require: false
   gem 'capistrano-shell', require: false
+  gem 'capistrano-systemd', require: false
 end

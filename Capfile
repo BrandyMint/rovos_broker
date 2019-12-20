@@ -18,4 +18,4 @@ install_plugin Capistrano::SCM::Git
 require 'capistrano/rbenv'
 require 'capistrano/bundler'
 require 'capistrano/shell'
-require 'capistrano/foreman'
+require 'capistrano/systemd'
