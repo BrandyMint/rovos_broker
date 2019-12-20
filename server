@@ -1,1 +1,2 @@
-bundle exec rackup
+bundle exec foreman start
+# bundle exec rackup
