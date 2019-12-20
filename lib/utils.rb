@@ -39,6 +39,8 @@ class Utils
   #   decimal_to_hex(100020003, 8) # => '05F62F23'
   #   decimal_to_hex(0x4377)       # => '4377'
   def self.decimal_to_hex(int, size = 4)
+    return if int.nil?
+
     format("%0#{size}X", int).upcase
   end
 
