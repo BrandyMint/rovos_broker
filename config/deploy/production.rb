@@ -5,7 +5,7 @@ set :stage, :production
 set :rails_env, :production
 fetch(:default_env)[:rails_env] = :production
 
-server '95.217.36.54',
+server ENV['PRODUCTION_HOST'],
        user: fetch(:user),
        port: '22',
        roles: %w[broker].freeze,
