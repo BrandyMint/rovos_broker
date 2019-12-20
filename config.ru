@@ -11,7 +11,6 @@ require 'rack'
 
 TCP_PORT = ENV.fetch('ROVOS_PORT', 3000)
 HTTP_PORT = ENV.fetch('HTTP_PORT', 8080)
-DEFAULT_MINUTES = 4
 
 $tcp_server = MachineServer.new
 

@@ -44,11 +44,9 @@
 * 255 - Сброс (в режиме сброса). Сбрасывает оставшееся время (`elapsed_time`)
   если оно было закинуто в 65536. Не влияет на уже запущенную машину.
 
-## Rovos: Тарифы
+## Установка systemd-демона на боемов
 
-* 5 минут 50 руб
-* 10 мин 90 руб
-* 20 мин 150 руб
+> sudo bundle exec foreman export --app rovos-broker --user wwwuser systemd /etc/systemd/system
 
 ## TODO
 
