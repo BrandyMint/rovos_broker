@@ -5,13 +5,13 @@
 source 'http://rubygems.org'
 
 gem 'eventmachine'
+gem 'foreman'
 gem 'hanami-controller'
 gem 'hanami-router'
 gem 'rack'
+gem 'semver2'
 gem 'shallow_attributes'
 gem 'thin'
-gem 'foreman'
-gem 'semver2'
 
 group :development do
   gem 'guard'
@@ -29,7 +29,7 @@ group :development do
 
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
+  gem 'capistrano-foreman', require: false
   gem 'capistrano-rbenv', require: false
   gem 'capistrano-shell', require: false
-  gem 'capistrano-foreman', require: false
 end

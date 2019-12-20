@@ -88,7 +88,7 @@ class MachineConnection < EventMachine::Connection
   end
 
   def log(message)
-    puts "#{Time.now}: #{client} #{message}"
+    $logger.debug "#{client}: #{message}"
   end
 
   def save_machine_id(message)

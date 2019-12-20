@@ -14,6 +14,8 @@ HTTP_PORT = ENV.fetch('HTTP_PORT', 8080)
 
 $tcp_server = MachineServer.new
 
+Thin::Logging.logger = $logger
+
 app = Hanami::Router.new do
   # List of connected machines
   get '/machines', to: 'machines#index'
@@ -27,5 +29,6 @@ end
 
 EventMachine.run do
   $tcp_server.start TCP_PORT
+  use Rack::CommonLogger, $logger
   Rack::Handler::Thin.run app, Host: '0.0.0.0', Port: HTTP_PORT, signals: false
 end

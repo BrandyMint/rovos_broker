@@ -13,7 +13,7 @@ class MachineServer
   end
 
   def start(port)
-    puts "Start TCP (Rovos) server listening on #{port}"
+    $logger.info "Start TCP (Rovos) server listening on #{port}"
     # p Socket.unpack_sockaddr_in( EM.get_sockname( server.signature ))
     @signature = EventMachine.start_server('0.0.0.0', port, MachineConnection) do |con|
       con.server = self
@@ -34,7 +34,7 @@ class MachineServer
       EventMachine.stop
       true
     else
-      puts "Waiting for #{@connections.size} connection(s) to finish ..."
+      $logger.warn "Waiting for #{@connections.size} connection(s) to finish ..."
       false
     end
   end
