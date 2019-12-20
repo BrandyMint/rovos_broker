@@ -8,11 +8,12 @@
 # Использую haname-action только ради обработки ошибок
 #
 module Machines
+  HEADERS = {'Content-Type' => 'application/json'}
   # Список подключенных машин
   class Index
     include Hanami::Action
     def call(_params)
-      # self.headers.merge!({ 'X-Custom' => 'OK' })
+      self.headers.merge! HEADERS
       self.body = { machines: $tcp_server.connections.keys }.to_json
     end
   end
@@ -21,13 +22,14 @@ module Machines
   class ChangeStatus
     include Hanami::Action
     def call(params)
+      self.headers.merge! HEADERS
       connection = $tcp_server.connections.fetch params[:id].to_i
       message = connection.build_message state: params[:state].to_i, work_time: params[:time].to_i
       connection.send_message message
       self.body = { message: message.to_h, status: 'sent'  }.to_json
     rescue KeyError
       self.status = 404
-      self.body = "No such machine online"
+      self.body = { error: "No such machine online" }.to_json
     end
   end
 
@@ -39,16 +41,17 @@ module Machines
 
       cb = Proc.new do |message|
         connection.query = nil
-        @_env['async.callback'].call [200, {'Content-Type' => 'application/json'}, { response_message: message.to_h }.to_json ]
+        @_env['async.callback'].call [200, HEADERS, { response_message: message.to_h }.to_json ]
       end
       connection.query = EM::Queue.new
       connection.query.pop(&cb)
 
       connection.send_message connection.build_message state: 4
+      self.headers.merge! HEADERS
       self.status = -1
     rescue KeyError
       self.status = 404
-      self.body = "No such machine online"
+      self.body = { error: "No such machine online" }.to_json
     end
   end
 end
