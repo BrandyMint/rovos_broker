@@ -15,6 +15,8 @@ HTTP_PORT = ENV.fetch('HTTP_PORT', 8080)
 $tcp_server = MachineServer.new
 
 Thin::Logging.logger = $logger
+$logger.info "Rovos-broker #{AppVersion} (c) 2019 Danil Pismenny"
+$logger.debug "RACK_ENV=#{ENV['RACK_ENV']}"
 
 app = Hanami::Router.new do
   # List of connected machines
