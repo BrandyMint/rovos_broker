@@ -45,7 +45,11 @@ module Machines
       connection = $tcp_server.connections.fetch params[:id].to_i
       self.headers.merge! HEADERS
       self.status = 200
-      self.body = { machine_id: connection.machine_id, last_activity: connection.last_activity }.to_json
+      self.body = {
+        machine_id: connection.machine_id,
+        last_activity_at: connection.last_activity,
+        last_activity_elapsed: Time.now - connection.last_activity
+      }.to_json
     rescue KeyError
       self.status = 404
       self.body = { error: "No such machine online" }.to_json
