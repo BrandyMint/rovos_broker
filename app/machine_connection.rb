@@ -61,9 +61,14 @@ class MachineConnection < EventMachine::Connection
 
   attr_reader :conn, :addr
 
+  def validate_header!(header)
+    return if header == HEADER
+
+    raise Error, "Unknown header #{Utils.decimal_to_hex header} (#{Utils.decimal_to_hex HEADER})"
+  end
+
   def load_message(bin)
-    header = Utils.bin_to_decimal(bin[0, 2])
-    raise Error, "Unknown header #{Utils.decimal_to_hex header} (#{Utils.decimal_to_hex HEADER})" unless header == HEADER
+    validate_header! header = Utils.bin_to_decimal(bin[0, 2])
 
     msg1 = Utils.bin_to_decimal(bin[2, 2])
     Message.new(

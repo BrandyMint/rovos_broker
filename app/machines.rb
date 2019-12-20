@@ -28,10 +28,8 @@ module Machines
         @_env['async.callback'].call [200, HEADERS, { response_message: message.to_h }.to_json]
         connection.channel.unsubscribe sid
       end
-      message = connection.build_message state: params[:state].to_i, work_time: params[:time].to_i
-      connection.send_message message
+      connection.send_message connection.build_message state: params[:state].to_i, work_time: params[:time].to_i
       self.status = -1
-      # self.body = { message: message.to_h, status: 'sent'  }.to_json
     rescue KeyError
       self.status = 404
       self.body = { error: 'No such machine online' }.to_json
