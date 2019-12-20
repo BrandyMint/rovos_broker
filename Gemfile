@@ -10,6 +10,7 @@ gem 'hanami-router'
 gem 'rack'
 gem 'shallow_attributes'
 gem 'thin'
+gem 'foreman'
 
 group :development do
   gem 'guard'
