@@ -8,8 +8,8 @@ gem 'eventmachine'
 gem 'hanami-controller'
 gem 'hanami-router'
 gem 'rack'
-gem 'thin'
 gem 'shallow_attributes'
+gem 'thin'
 
 group :development do
   gem 'guard'

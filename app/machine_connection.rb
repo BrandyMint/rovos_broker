@@ -22,7 +22,7 @@ class MachineConnection < EventMachine::Connection
   end
 
   def post_init
-    log "Connected"
+    log 'Connected'
   end
 
   def receive_data(data)
@@ -30,9 +30,9 @@ class MachineConnection < EventMachine::Connection
     message = load_message decode data
     log "Received 0x#{Utils.bin_to_hex data} as #{message}"
     save_machine_id message
-    channel.push message unless channel.nil?
-  rescue Error => err
-    log "Wrong message header #{err}"
+    channel&.push message
+  rescue Error => e
+    log "Wrong message header #{e}"
   end
 
   def unbind
@@ -49,10 +49,10 @@ class MachineConnection < EventMachine::Connection
 
   def build_message(state:, work_time: 0, time_left: 0)
     Message.new(
-      header:     HEADER,
-      state:      state,
-      work_time:  work_time,
-      time_left:  time_left,
+      header: HEADER,
+      state: state,
+      work_time: work_time,
+      time_left: time_left,
       machine_id: machine_id
     )
   end
@@ -64,12 +64,13 @@ class MachineConnection < EventMachine::Connection
   def load_message(bin)
     header = Utils.bin_to_decimal(bin[0, 2])
     raise Error, "Unknown header #{Utils.decimal_to_hex header} (#{Utils.decimal_to_hex HEADER})" unless header == HEADER
+
     msg1 = Utils.bin_to_decimal(bin[2, 2])
     Message.new(
-      header:     header,
-      state:      Utils.bytes_from_word(msg1).first,
-      work_time:  Utils.bytes_from_word(msg1).last,
-      time_left:  Utils.bin_to_decimal(bin[4, 2]),
+      header: header,
+      state: Utils.bytes_from_word(msg1).first,
+      work_time: Utils.bytes_from_word(msg1).last,
+      time_left: Utils.bin_to_decimal(bin[4, 2]),
       machine_id: Utils.bin_to_decimal(bin[6, 4])
     )
   end

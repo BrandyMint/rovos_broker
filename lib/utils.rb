@@ -17,6 +17,7 @@ class Utils
   #   bin_to_hex("\xAB\x98") # => "AB98"
   def self.bin_to_hex(bin)
     return nil if bin.nil?
+
     bin.unpack1('H*').upcase
   end
 
@@ -43,6 +44,7 @@ class Utils
 
   def self.bin_to_decimal(bin)
     return nil if bin.nil?
+
     bin_to_hex(bin).to_i(16)
   end
 
