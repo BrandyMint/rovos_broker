@@ -76,7 +76,7 @@ class MachineConnection < EventMachine::Connection
 
   def log(message)
     port, ip = Socket.unpack_sockaddr_in(get_peername)
-    puts "#{Time.now}: #{port}:#{ip} #{message}"
+    puts "#{Time.now}: TCP #{port}:#{ip} #{message}"
   end
 
   def save_machine_id(message)
