@@ -15,15 +15,17 @@ DEFAULT_MINUTES = 4
 
 $tcp_server = MachineServer.new
 
+AsyncResponse = [-1, {}, []].freeze
+
 app = Hanami::Router.new do
   # List of connected machines
   get '/machines', to: 'machines#index'
 
+  # Set status of machine
+  post '/machines/:id', to: 'machines#change_status'
+
   # Get status of machine
   get '/machines/:id', to: 'machines#get_status'
-
-  # Change status of machine
-  post '/machines/:id', to: 'machines#change_status'
 end
 
 EventMachine.run do

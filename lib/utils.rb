@@ -16,6 +16,7 @@ class Utils
   # @example
   #   bin_to_hex("\xAB\x98") # => "AB98"
   def self.bin_to_hex(bin)
+    return nil if bin.nil?
     bin.unpack1('H*').upcase
   end
 
@@ -41,6 +42,7 @@ class Utils
   end
 
   def self.bin_to_decimal(bin)
+    return nil if bin.nil?
     bin_to_hex(bin).to_i(16)
   end
 
@@ -54,5 +56,11 @@ class Utils
   #   Utils.word_from_bytes(2, 10) # => 0x020A
   def self.word_from_bytes(byte1, byte2 = 0)
     [byte1, byte2].pack('c*').unpack1('n')
+  end
+
+  # @example
+  #   Utils.bytes_from_word(0x020A) # => [2,10]
+  def self.bytes_from_word(word)
+    [word].pack('S>').unpack('C*')
   end
 end

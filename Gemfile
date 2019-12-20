@@ -9,6 +9,7 @@ gem 'hanami-controller'
 gem 'hanami-router'
 gem 'rack'
 gem 'thin'
+gem 'shallow_attributes'
 
 group :development do
   gem 'guard'

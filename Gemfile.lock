@@ -84,6 +84,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.7)
     ruby-progressbar (1.10.1)
+    shallow_attributes (0.9.5)
     shellany (0.0.1)
     thin (1.7.2)
       daemons (~> 1.0, >= 1.0.9)
@@ -117,6 +118,7 @@ DEPENDENCIES
   rack
   rake
   rubocop
+  shallow_attributes
   thin
   yard
   yard-doctest
