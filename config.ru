@@ -11,6 +11,7 @@ require 'rack'
 
 TCP_PORT = ENV.fetch('ROVOS_PORT', 3000)
 HTTP_PORT = ENV.fetch('HTTP_PORT', 8080)
+REQUEST_TIMEOUT = ENV.fetch('REQUEST_TIMEOUT', 7)
 
 $tcp_server = MachineServer.new
 
@@ -36,5 +37,9 @@ end
 EventMachine.run do
   $tcp_server.start TCP_PORT
   use Rack::CommonLogger, $logger
-  Rack::Handler::Thin.run app, Host: '0.0.0.0', Port: HTTP_PORT, signals: false
+  Rack::Handler::Thin.run app,
+                          Host: '0.0.0.0',
+                          Port: HTTP_PORT,
+                          timeout: REQUEST_TIMEOUT,
+                          signals: false
 end
