@@ -18,7 +18,11 @@ Thin::Logging.logger = $logger
 $logger.info "Rovos-broker #{AppVersion} (c) 2019 Danil Pismenny"
 $logger.debug "RACK_ENV=#{ENV['RACK_ENV']}"
 
+$started_at = Time.now
+
 app = Hanami::Router.new do
+  root to: 'machines#root'
+
   # List of connected machines
   get '/machines', to: 'machines#index'
 

@@ -13,8 +13,12 @@ module Machines
     'X-App-Version' => AppVersion.to_s,
     'X-App-Env' => ENV['RACK_ENV']
   }.freeze
-  # Сборник утилит
-  class Action
+
+  # Сколько ждать асинхронный ответ от брокера
+  ASYNC_TIMEOUT = 5
+
+  # Сборник утилит, лучше выделить в concern
+  module FetchConnection
     private
 
     def fetch_connection(id)
@@ -26,20 +30,33 @@ module Machines
     end
   end
 
-  # Список подключенных машин
-  class Index < Action
+  # Общий статус брокера
+  class Root
     include Hanami::Action
 
     def call(_params)
       headers.merge! HEADERS
       self.status = 200
-      self.body = { env: ENV['RACK_ENV'], version: AppVersion.to_s, machines: $tcp_server.connections.keys }.to_json
+      self.body = { env: ENV['RACK_ENV'], version: AppVersion.to_s, up_time: Time.now - $started_at }.to_json
+    end
+  end
+
+  # Список подключенных машин
+  class Index
+    include Hanami::Action
+
+    def call(_params)
+      headers.merge! HEADERS
+      self.status = 200
+      self.body = { machines: $tcp_server.connections.keys }.to_json
     end
   end
 
   # Запрос на смену статуса машины
-  class ChangeStatus < Action
+  class ChangeStatus
     include Hanami::Action
+    include FetchConnection
+
     # rubocop:disable Metrics/AbcSize
     def call(params)
       headers.merge! HEADERS
@@ -50,15 +67,17 @@ module Machines
           connection.channel.unsubscribe sid
         end
         connection.send_message sent_message
-        self.status = -1
+        throw :async
       end
     end
     # rubocop:enable Metrics/AbcSize
   end
 
   # Получение статуса машины
-  class GetStatus < Action
+  class GetStatus
     include Hanami::Action
+    include FetchConnection
+
     def call(params)
       headers.merge! HEADERS
       fetch_connection params[:id] do |connection|
