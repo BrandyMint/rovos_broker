@@ -22,4 +22,5 @@ RuboCop::RakeTask.new(:rubocop) do |t|
   t.fail_on_error = true
 end
 
+# После yard:doctest rubocop уже не выполняется, поэтому приходитс так
 task default: %i[rubocop yard:doctest]

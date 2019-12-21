@@ -29,7 +29,7 @@ class Message
   end
 
   # @example
-  #   Message.new(msg1: 0x0204, time_left: 0, machine_id: 100020003).bin.length # => 10
+  #   Message.new(header: 0x0204, state: 2, time_left: 0, work_time: 0, machine_id: 100020003).bin.length # => 10
   def bin
     [
       decimal_to_bin(header),
