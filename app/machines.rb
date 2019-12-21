@@ -37,7 +37,12 @@ module Machines
     def call(_params)
       headers.merge! HEADERS
       self.status = 200
-      self.body = { env: ENV['RACK_ENV'], version: AppVersion.to_s, up_time: Time.now - $started_at }.to_json
+      self.body = {
+        env: ENV['RACK_ENV'],
+        threads_count: Thread.list.count,
+        version: AppVersion.to_s,
+        up_time: Time.now - $started_at
+      }.to_json
     end
   end
 
