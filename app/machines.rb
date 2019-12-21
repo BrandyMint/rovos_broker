@@ -9,9 +9,9 @@
 #
 module Machines
   HEADERS = {
-    'Content-Type'  => 'application/json',
+    'Content-Type' => 'application/json',
     'X-App-Version' => AppVersion.to_s,
-    'X-App-Env'     => ENV['RACK_ENV']
+    'X-App-Env' => ENV['RACK_ENV']
   }.freeze
   # Сборник утилит
   class Action

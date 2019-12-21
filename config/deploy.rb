@@ -20,4 +20,4 @@ ask :branch, ENV['BRANCH'] || proc { `git rev-parse --abbrev-ref HEAD`.chomp } i
 
 set :systemd_unit, -> { "#{fetch :application}-server.target" }
 set :systemd_use_sudo, true
-set :systemd_roles, %w(broker)
+set :systemd_roles, %w[broker]
