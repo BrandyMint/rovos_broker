@@ -68,7 +68,13 @@ module Machines
       fetch_connection params[:id] do |connection|
         sent_message = connection.build_message state: params[:state].to_i, work_time: params[:work_time].to_i
         sid = connection.channel.subscribe do |message|
-          @_env['async.callback'].call [201, HEADERS, { sent: sent_message.to_h, received: message.to_h }.to_json]
+          data = {
+            last_activity_at: connection.last_activity,
+            last_activity_elapsed: Time.now - connection.last_activity,
+            sent: sent_message.to_h,
+            received: message.to_h
+          }
+          @_env['async.callback'].call [201, HEADERS, data.to_json]
           connection.channel.unsubscribe sid
         end
         connection.send_message sent_message
