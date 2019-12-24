@@ -16,12 +16,14 @@ class MachineConnection < EventMachine::Connection
   attr_reader :machine_id
   attr_reader :channel
   attr_reader :last_activity
+  attr_reader :connected_at
 
   def initialize
     @channel = EventMachine::Channel.new
   end
 
   def post_init
+    @connected_at = Time.now
     log 'Connected'
   end
 
@@ -98,7 +100,7 @@ class MachineConnection < EventMachine::Connection
     if machine_id.nil?
       @machine_id = message.machine_id
       log "Add machine with #{machine_id} to online list"
-      server.connections.put_if_absent machine_id, self
+      server.connections.put_if_absent machine_id, connection
     elsif machine_id != message.machine_id
       raise "Oops! Machine ID is changed #{machine_id} <> #{message.machine_id}."
     end
