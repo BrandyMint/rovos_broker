@@ -37,7 +37,10 @@ class MachineConnection < EventMachine::Connection
 
   def unbind
     log 'Close connecition'
-    server.connections.delete(machine_id) unless machine_id.nil?
+    unless machine_id.nil?
+      log "Delete machine #{machine_id} from connections list"
+      server.connections.delete(machine_id)
+    end
   end
 
   def send_message(message)
