@@ -17,6 +17,7 @@ class MachineConnection < EventMachine::Connection
   attr_reader :channel
   attr_reader :last_activity
   attr_reader :connected_at
+  attr_reader :client
 
   def initialize
     @channel = EventMachine::Channel.new
@@ -24,6 +25,9 @@ class MachineConnection < EventMachine::Connection
 
   def post_init
     @connected_at = Time.now
+    port, ip = Socket.unpack_sockaddr_in(get_peername)
+    @client = "TCP[rovos]://#{ip}:#{port}"
+
     log 'Connected'
   end
 
@@ -85,13 +89,6 @@ class MachineConnection < EventMachine::Connection
     )
   end
 
-  def client
-    @client ||= begin
-                  port, ip = Socket.unpack_sockaddr_in(get_peername)
-                  "TCP[rovos]://#{ip}:#{port}"
-                end
-  end
-
   def log(message)
     $logger.debug "#{client}: #{message}"
   end
@@ -100,7 +97,11 @@ class MachineConnection < EventMachine::Connection
     if machine_id.nil?
       @machine_id = message.machine_id
       log "Add machine with #{machine_id} to online list"
-      server.connections.put_if_absent machine_id, self
+      old_connection = server.connections.get_and_set machine_id, self
+      unless old_connection.nil?
+        log "Replace old_connection #{old_connection.client} #{old_connection.machine_id}"
+        old_connection.close_connection
+      end
     elsif machine_id != message.machine_id
       raise "Oops! Machine ID is changed #{machine_id} <> #{message.machine_id}."
     end
