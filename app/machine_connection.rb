@@ -11,7 +11,7 @@ class MachineConnection < EventMachine::Connection
   Error = Class.new StandardError
 
   HEADER = 0x4377 # Income as 0xDBEF
-  attr_accessor :server
+  attr_accessor :connections
 
   attr_reader :machine_id
   attr_reader :channel
@@ -45,7 +45,7 @@ class MachineConnection < EventMachine::Connection
     log 'Close connecition'
     unless machine_id.nil?
       log "Delete machine #{machine_id} from connections list"
-      server.connections.delete(machine_id)
+      connections.delete_pair machine_id, self
     end
   end
 
@@ -97,7 +97,7 @@ class MachineConnection < EventMachine::Connection
     if machine_id.nil?
       @machine_id = message.machine_id
       log "Add machine with #{machine_id} to online list"
-      old_connection = server.connections.get_and_set machine_id, self
+      old_connection = connections.get_and_set machine_id, self
       unless old_connection.nil?
         log "Replace old_connection #{old_connection.client} #{old_connection.machine_id}"
         old_connection.close_connection

@@ -16,7 +16,7 @@ class MachineServer
     $logger.info "Start Rovos tcp-server #{AppVersion} listening on #{port}"
     # p Socket.unpack_sockaddr_in( EM.get_sockname( server.signature ))
     @signature = EventMachine.start_server('0.0.0.0', port, MachineConnection) do |con|
-      con.server = self
+      con.connections = connections
     end
   end
 
