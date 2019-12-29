@@ -61,6 +61,7 @@ GEM
       url_mount (~> 0.2.1)
     i18n (1.7.0)
       concurrent-ruby (~> 1.0)
+    influxdb (0.7.0)
     jaro_winkler (1.5.4)
     json (1.8.6)
     listen (3.2.1)
@@ -143,6 +144,7 @@ DEPENDENCIES
   guard-shell
   hanami-controller
   hanami-router
+  influxdb
   minitest-reporters
   pry
   pry-nav

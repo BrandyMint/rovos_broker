@@ -35,6 +35,7 @@ class MachineConnection < EventMachine::Connection
     @last_activity = Time.now
     message = load_message decode data
     log "Received 0x#{Utils.bin_to_hex data} as #{message}"
+    notify_influx
     save_machine_id message
     channel&.push message
   rescue Error => e
@@ -43,10 +44,10 @@ class MachineConnection < EventMachine::Connection
 
   def unbind
     log 'Close connecition'
-    unless machine_id.nil?
-      log "Delete machine #{machine_id} from connections list"
-      connections.delete_pair machine_id, self
-    end
+    return if machine_id.nil?
+
+    log "Delete machine #{machine_id} from connections list"
+    connections.delete_pair machine_id, self
   end
 
   def send_message(message)
@@ -89,22 +90,41 @@ class MachineConnection < EventMachine::Connection
     )
   end
 
+  def notify_influx
+    now = Time.now
+    unless @last_influx_at.nil?
+      data = {
+        tags: { client: client, machine_id: machine_id },
+        values: { period: now - @last_influx_at }
+      }
+      $influx.write_point 'ping', data
+    end
+    @last_influx_at = Time.now
+  end
+
   def log(message)
     $logger.debug "#{client}: #{message}"
   end
 
   def save_machine_id(message)
-    if machine_id.nil?
-      @machine_id = message.machine_id
-      log "Add machine with #{machine_id} to online list"
-      old_connection = connections.get_and_set machine_id, self
-      unless old_connection.nil?
-        log "Replace old_connection #{old_connection.client} #{old_connection.machine_id}"
-        old_connection.close_connection
-      end
-    elsif machine_id != message.machine_id
+    if machine_id
+      return if machine_id == message.machine_id
+
       raise "Oops! Machine ID is changed #{machine_id} <> #{message.machine_id}."
     end
+
+    @machine_id = message.machine_id
+    log "Add machine with #{machine_id} to online list"
+
+    close_parallel_connection
+  end
+
+  def close_parallel_connection
+    old_connection = connections.get_and_set machine_id, self
+    return if old_connection.nil?
+
+    log "Replace old_connection #{old_connection.client} #{old_connection.machine_id}"
+    old_connection.close_connection
   end
 
   KEY = 152

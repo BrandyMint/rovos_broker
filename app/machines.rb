@@ -37,11 +37,11 @@ module Machines
       headers.merge! HEADERS
       self.status = 200
       self.body = {
-        env:               ENV['RACK_ENV'],
-        threads_count:     Thread.list.count,
+        env: ENV['RACK_ENV'],
+        threads_count: Thread.list.count,
         connections_count: $tcp_server.connections.size,
-        version:           AppVersion.to_s,
-        up_time:           Time.now - $started_at
+        version: AppVersion.to_s,
+        up_time: Time.now - $started_at
       }.to_json
     end
   end
@@ -69,11 +69,11 @@ module Machines
         sent_message = connection.build_message state: params[:state].to_i, work_time: params[:work_time].to_i
         sid = connection.channel.subscribe do |message|
           data = {
-            connected_at:          connection.connected_at,
-            last_activity_at:      connection.last_activity,
+            connected_at: connection.connected_at,
+            last_activity_at: connection.last_activity,
             last_activity_elapsed: Time.now - connection.last_activity,
-            sent:                  sent_message.to_h,
-            received:              message.to_h
+            sent: sent_message.to_h,
+            received: message.to_h
           }
           @_env['async.callback'].call [201, HEADERS, data.to_json]
           connection.channel.unsubscribe sid
@@ -95,9 +95,9 @@ module Machines
       fetch_connection params[:id] do |connection|
         self.status = 200
         self.body = {
-          connected_at:          connection.connected_at,
-          machine_id:            connection.machine_id,
-          last_activity_at:      connection.last_activity,
+          connected_at: connection.connected_at,
+          machine_id: connection.machine_id,
+          last_activity_at: connection.last_activity,
           last_activity_elapsed: Time.now - connection.last_activity
         }.to_json
       end
