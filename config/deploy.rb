@@ -10,7 +10,7 @@ set :rbenv_type, :user
 set :rbenv_ruby, File.read('.ruby-version').strip
 
 set :user, 'wwwuser'
-set :repo_url, 'git@github.com:BrandyMint/iot_tcp_http_broker.git' if ENV['USE_LOCAL_REPO'].nil?
+set :repo_url, 'git@github.com:BrandyMint/rovos_broker.git' if ENV['USE_LOCAL_REPO'].nil?
 set :keep_releases, 10
 set :linked_dirs, %w[log tmp/pids tmp/cache tmp/sockets]
 # set :linked_files, %w[config/master.key]
