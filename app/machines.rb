@@ -65,8 +65,12 @@ module Machines
     # rubocop:disable Metrics/AbcSize
     def call(params)
       headers.merge! HEADERS
-      fetch_connection params[:id] do |connection|
-        sent_message = connection.build_message state: params[:state].to_i, work_time: params[:work_time].to_i
+      machine_id = params[:id]
+      fetch_connection machine_id do |connection|
+        work_time = params[:work_time].to_i
+        state = params[:state].to_i
+        sent_message = connection.build_message state: state, work_time: work_time
+        commant_sent = Time.now
         sid = connection.channel.subscribe do |message|
           data = {
             connected_at: connection.connected_at,
@@ -76,8 +80,10 @@ module Machines
             received: message.to_h
           }
           @_env['async.callback'].call [201, HEADERS, data.to_json]
+          $influx.write_point 'call', tags: { machine_id: machine_id }, values: { work_time: work_time, wait: Time.now - commant_sent }
           connection.channel.unsubscribe sid
         end
+
         connection.send_message sent_message
         throw :async
       end
