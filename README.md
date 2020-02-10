@@ -56,29 +56,7 @@
 
 Доступ огранчивается на уровне фронт-веб-сервера. Например через индивидуальный сертификат на caddy:
 
-Делаем по инструкции https://gist.github.com/Soarez/9688998
-
-> openssl genrsa -out broker.venpay.ru.key 2048  # Может лишнее, не помню уже
-> openssl req -new -key broker.venpay.ru.key -out broker.venpay.ru.csr  
-> openssl req -in broker.venpay.ru.csr -noout -text 
-> openssl genrsa -out ca.key 2048
-> openssl req -new -x509 -key ca.key -out ca.crt 
-> openssl x509 -req -in broker.venpay.ru.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out broker.venpay.ru.crt
-> cat broker.venpay.ru.crt ca.crt > broker.venpay.ru.bundle.crt 
-> scp broker.venpay.ru.bundle.crt wwwuser@venpay.ru:/home/wwwuser/venpay.ru/shared/config/
-> scp broker.venpay.ru.key wwwuser@venpay.ru:/home/wwwuser/venpay.ru/shared/config/
-> scp broker.venpay.ru.pub wwwuser@venpay.ru:/home/wwwuser/venpay.ru/shared/config/
-> scp ca.*  wwwuser@venpay.ru:/home/wwwuser/venpay.ru/shared/config/
-> cat broker.venpay.ru.key >> broker.venpay.ru.pem 
-
-Тестируем:
-
-> curl -k https://broker.venpay.ru/machines --cert ./broker.venpay.ru.pem
-
-или
-
-> curl -k https://broker.venpay.ru/machines --cert ./broker.venpay.ru.pem \
-  --cacert ./ca.pem --key ./broker.venpay.ru.key
+См пример генерации сертификара в репозитории venpay.ru
 
 В `Caddyfile`:
 
@@ -89,7 +67,7 @@ broker.venpay.ru {
   gzip
 
   tls /home/wwwuser/venpay.ru/shared/config/certs/broker.venpay.ru.bundle.crt /home/wwwuser/venpay.ru/shared/config/certs/broker.venpay.ru.key {
-    clients  /home/wwwuser/venpay.ru/shared/config/certs/ca.crt
+    clients /home/wwwuser/venpay.ru/shared/config/certs/ca.crt
     max_certs 10
   }
 
