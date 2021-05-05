@@ -11,6 +11,8 @@ require 'rack'
 
 TCP_PORT = ENV.fetch('ROVOS_PORT', 3000)
 HTTP_PORT = ENV.fetch('HTTP_PORT', 8080)
+
+# HTTP API Response timeout
 REQUEST_TIMEOUT = ENV.fetch('REQUEST_TIMEOUT', 7)
 
 $tcp_server = MachineServer.new

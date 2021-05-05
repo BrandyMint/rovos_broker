@@ -14,9 +14,6 @@ module Machines
     'X-App-Env' => ENV['RACK_ENV']
   }.freeze
 
-  # Сколько ждать асинхронный ответ от брокера
-  ASYNC_TIMEOUT = 5
-
   # Сборник утилит, лучше выделить в concern
   module FetchConnection
     private
